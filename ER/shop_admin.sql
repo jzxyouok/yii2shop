@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `shop_admin`;
 CREATE TABLE IF NOT EXISTS `shop_admin`(
   `adminid` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '管理员主键id',
   `adminuser` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '管理员账号',
-  `adminpass` CHAR(64) NOT NULL DEFAULT '' COMMENT '管理员密码',
+  `adminpass` CHAR(32) NOT NULL DEFAULT '' COMMENT '管理员密码',
   `adminemail` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '管理员邮箱',
   `logintime` INT UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录时间',
   `loginip` BIGINT NOT NULL DEFAULT '0' COMMENT '登录ip',
@@ -14,23 +14,17 @@ CREATE TABLE IF NOT EXISTS `shop_admin`(
 
 INSERT INTO  `shop_admin`(adminuser,adminpass,adminemail,createtime) VALUES('admin',md5('123'),'test@qq.com',UNIX_TIMESTAMP());
 
--- alter table `shop_admin` modify adminpass CHAR(64) NOT NULL DEFAULT '' comment '改变管理员密码加密形式';
-
 DROP TABLE IF EXISTS `shop_user`;
 CREATE TABLE IF NOT EXISTS `shop_user`(
   `userid` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户主键id',
   `username` VARCHAR(32) NOT NULL DEFAULT '',
-  `userpass` CHAR(64) NOT NULL DEFAULT '',
+  `userpass` CHAR(32) NOT NULL DEFAULT '',
   `useremail` VARCHAR(100) NOT NULL DEFAULT '',
-  `openid` char(32) not null DEFAULT '0',
   `createtime` INT UNSIGNED NOT NULL DEFAULT '0',
   UNIQUE shop_user_username_userpass(`username`,`userpass`),
   UNIQUE shop_user_useremail_userpass(`useremail`,`userpass`),
   PRIMARY KEY(`userid`)
 )ENGINE=InnoDB DEFAULT CHARSET='utf8';
-
--- alter table `shop_user` modify userpass CHAR(64) NOT NULL DEFAULT '' comment '改变密码加密形式';
--- alter table shop_user add `openid` char(32) not null DEFAULT '0';
 
 DROP TABLE IF EXISTS `shop_profile`;
 CREATE TABLE IF NOT EXISTS `shop_profile`(
@@ -53,19 +47,16 @@ CREATE TABLE IF NOT EXISTS `shop_category`(
   `title` VARCHAR(32) NOT NULL DEFAULT '',
   `parentid` BIGINT UNSIGNED NOT NULL DEFAULT '0',
   `createtime` INT UNSIGNED NOT NULL DEFAULT '0',
-   adminid int unsigned not null default '0' comment '添加的管理员id',
   PRIMARY KEY(`cateid`),
   KEY shop_category_cateid_parentid(`parentid`)
 )ENGINE=InnoDB DEFAULT CHARSET='utf8';
-
--- alter table shop_category add adminid int unsigned not null default '0' comment '添加的管理员id';
 
 DROP TABLE IF EXISTS  `shop_product`;
 CREATE TABLE IF NOT EXISTS  `shop_product`(
   `productid` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `cateid` BIGINT UNSIGNED NOT NULL DEFAULT '0',
   `title` VARCHAR(200) NOT NULL DEFAULT '',
-  `description` TEXT,
+  `desc` TEXT,
   `num` BIGINT UNSIGNED NOT NULL DEFAULT '0',
   `price` DECIMAL(10,2) NOT NULL DEFAULT '00000000.00',
   `cover` VARCHAR(200) NOT NULL DEFAULT '' COMMENT '封面图片',
@@ -76,13 +67,9 @@ CREATE TABLE IF NOT EXISTS  `shop_product`(
   `ison` ENUM('0','1') NOT NULL DEFAULT '1' COMMENT '是否热卖,1代表热卖',
   `istui` ENUM('0','1') NOT NULL DEFAULT '0' COMMENT '是否推荐,1代表推荐',
   `createtime` INT UNSIGNED NOT NULL DEFAULT '0',
-  shop_product add updatetime int unsigned not null default '0' comment '商品更新时间',
   PRIMARY KEY(`productid`),
   KEY shop_product_cateid(`cateid`)
 )ENGINE InnoDB DEFAULT CHARSET='utf8';
-
--- alter table shop_product add updatetime int unsigned not null default '0' comment '商品更新时间';
--- alter table shop_product change `desc`  description TEXT;
 
 DROP TABLE IF EXISTS  `shop_cart`;
 CREATE TABLE IF NOT EXISTS  `shop_cart`(
@@ -92,13 +79,9 @@ CREATE TABLE IF NOT EXISTS  `shop_cart`(
   `price` DECIMAL(10,2) NOT NULL DEFAULT '0.00',
   `userid` BIGINT UNSIGNED NOT NULL DEFAULT '0',
   `createtime` INT UNSIGNED NOT NULL DEFAULT '0',
-  updatetime int unsigned not null default '0' comment '购物车商品更新时间',
   KEY shop_cart_productid(`productid`),
   KEY shop_cart_userid(`userid`)
 )ENGINE=InnoDB DEFAULT CHARSET='utf8';
-
--- alter table shop_cart add updatetime int unsigned not null default '0' comment '购物车商品更新时间';
--- alter table shop_cart modify updatetime int unsigned not null default '0' comment '购物车商品更新时间';
 
 DROP TABLE IF EXISTS  `shop_order`;
 CREATE TABLE IF NOT EXISTS  `shop_order`(
@@ -151,17 +134,5 @@ CREATE TABLE IF NOT EXISTS  `shop_picture`(
   `title` VARCHAR(32) NOT NULL DEFAULT '',
   `piccomment` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '图片评价',
   `piccates` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '图片分类',
-  `pictures` TEXT COMMENT '所有图片存进json',
-  `createtime` INT UNSIGNED NOT NULL DEFAULT '0'
+  `pictures` TEXT COMMENT '所有图片存进json'
 )ENGINE InnoDB DEFAULT CHARSET='utf8';
-
--- alter table `shop_picture` add `createtime` INT UNSIGNED NOT NULL DEFAULT '0' comment "图片创建时间";
-
-/*
-mysql :  inet_aton('192.168.1.101');    ip转int
-         select inet_ntoa(3232235877);       int转ip
-php :   echo ip2long('192.168.1.38'); ip转int    存入时候
-        long2ip();                    int转ip    读取时候
-        获取IP $reIP=$_SERVER["REMOTE_ADDR"];
-
- */

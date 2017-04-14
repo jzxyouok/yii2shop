@@ -5,11 +5,6 @@
   <title>Document</title>
 </head>
 <body>
-<?php
-$imgfile = "";
-$arr = getimagesize($imgfile);
-print_r($arr);die;
-
-?>
+<?php  ?>
 </body>
 </html>
